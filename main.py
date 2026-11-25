@@ -24,6 +24,8 @@ crop_text_frame_path = script_dir / "last_saved_frame/crop_text_frame.png"
 crop_textbox_frame_path = script_dir / "last_saved_frame/crop_textbox_frame.png"
 weights_path = script_dir / "weights.pt"
 
+model = YOLO(str(weights_path))
+
 def YOLO_cropper() -> bool:
   global bgr, h_img, w_img
   bgr = cv2.imread(str(last_frame))
@@ -32,8 +34,6 @@ def YOLO_cropper() -> bool:
     return False
 
   h_img, w_img = bgr.shape[:2]
-  model = YOLO(str(weights_path))
-
   results = model.predict(
       source=bgr,
       imgsz=1280,
@@ -96,6 +96,8 @@ def save_crop(x1: int, y1: int, x2: int, y2: int, out_file: Path, pad: int = 4) 
   crop = bgr[cy1:cy2, cx1:cx2]
   cv2.imwrite(str(out_file), crop)
   # print(f"Saved {out_file.name}: ({cx1}, {cy1}, {cx2}, {cy2})")
+
+last_frame.parent.mkdir(parents=True, exist_ok=True)
 
 while True:
     screenshot = pyautogui.screenshot()
